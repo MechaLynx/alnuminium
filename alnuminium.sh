@@ -1,64 +1,68 @@
 #! /usr/bin/env bash
 
-function generate_hash {
+function generate_alnum {
     #
-    # Generate a random alphanumeric hash
+    # Generate a random alphanumeric string
     #
     # globals:
     #
     # args:
     #   $1 number of characters
-    #   $2 number of hashes
+    #   $2 number of strings
     #   $3 optional prefix
     #   $4 method
     #
     # returns:
     #
 
-    unset __hash
-    _generate_hash_"${4:-mktemp}" "$1" "$2" "$3"
+    unset __alnuminium
+    _generate_alnum_"${4:-mktemp}" "${1:-8}" "${2:-1}" "$3"
 }
 
-function _generate_hash_mktemp {
+function _generate_alnum_mktemp {
     #
-    # Generates hashes using mktemp
+    # Generates strings using mktemp
     #
     # globals:
     #
     # args:
     #   $1 number of characters
-    #   $2 number of hashes
+    #   $2 number of strings
     #   $3 optional prefix
     #
     # returns:
-    #   $__hash
+    #   $__alnuminium
     #
+
+    echo "mktemp"
 
     local _p _pad
     _pad="$( eval printf 'X%.0s' "{1..${1}}" )"
     for (( i=0; i<$2; i++ ))
     do
         _p=( "${3}$( mktemp -u tmp."${_pad}" )" )
-        __hash+=( "${_p/tmp.}" )
+        __alnuminium+=( "${_p/tmp.}" )
     done
 
     return 0
 }
 
-function _generate_hash_urandom {
+function _generate_alnum_urandom {
     #
-    # Generates hashes using /dev/urandom
+    # Generates strings using /dev/urandom
     #
     # globals:
     #
     # args:
     #   $1 number of characters
-    #   $2 number of hashes
+    #   $2 number of strings
     #   $3 optional prefix
     #
     # returns:
-    #   $__hash
+    #   $__alnuminium
     #
+
+    echo "urandom"
 
     local _p
     for (( i=0; i<$2; i++ ))
@@ -73,7 +77,7 @@ function _generate_hash_urandom {
         }
         [[ ${#_p} -ge $1 ]] && break
         done < /dev/urandom
-        __hash+=( "${3}$_p" )
+        __alnuminium+=( "${3}$_p" )
     done
 
     return 0
