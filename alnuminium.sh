@@ -34,7 +34,7 @@ function _generate_alnum_mktemp {
     #   $__alnuminium
     #
 
-    echo "mktemp"
+    [[ $1 -lt 4 ]] && { printf "mktemp requires at least 3 characters in length" 1>&2; return 1; }
 
     local _p _pad
     _pad="$( eval printf 'X%.0s' "{1..${1}}" )"
@@ -61,8 +61,6 @@ function _generate_alnum_urandom {
     # returns:
     #   $__alnuminium
     #
-
-    echo "urandom"
 
     local _p
     for (( i=0; i<$2; i++ ))
